@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # RabbitMQ - Create Hashed User Password
 
+# copy from https://gist.github.com/lukebakken/7b4da46ed9abb7ed14f7a60b49f9e52e
+# discussion from here: https://groups.google.com/forum/#!topic/rabbitmq-users/Brx3tSmNC_8
+
 set -o errexit
 set -o nounset
 
