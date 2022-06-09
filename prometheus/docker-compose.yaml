@@ -1,0 +1,31 @@
+---
+version: '2.2'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.20.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - './prometheus.yaml:/etc/prometheus/prometheus.yml'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.external-url=http://127.0.0.1:9090'
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+      - '--web.listen-address=0.0.0.0:9100'
+      - '--web.config=/etc/prometheus/config.yaml'
+    # network_mode: host
+    pid: host
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+    volumes:
+      - './node_exporter.yaml:/etc/prometheus/config.yaml'
+      # - '/:/host:ro,rslave'

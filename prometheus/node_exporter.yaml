@@ -1,0 +1,4 @@
+## username: prometheus
+## password: moelove.info
+basic_auth_users:
+  prometheus: $2y$12$WLw2sYa.NYZoBVoCOE84qe3xNm7kbSoKVIBXP.PvqNDna60vnZhEW
