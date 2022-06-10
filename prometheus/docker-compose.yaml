@@ -4,6 +4,7 @@ version: '2.2'
 services:
   prometheus:
     image: prom/prometheus:v2.20.1
+    container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -14,7 +15,23 @@ services:
       - '--web.enable-lifecycle'
       - '--storage.tsdb.retention.time=90d'
       - '--web.external-url=http://127.0.0.1:9090'
-  node_exporter:
+  pushgateway:
+    image: prom/pushgateway:v1.4.1
+    container_name: pushgateway
+    restart: always
+    ports:
+      - "9091:9091"
+    volumes:
+      - './pushgateway.yaml:/etc/pushgateway/pushgateway.yaml'
+    command:
+      - '--web.config.file=/etc/pushgateway/pushgateway.yaml'
+      - '--push.disable-consistency-check'
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.21.0
+    container_name: blackbox_exporter
+    ports:
+      - "9115:9115"
+  node-exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
     command:

@@ -1,0 +1,4 @@
+## username: pushgateway
+## password: moelove.info
+basic_auth_users:
+  pushgateway: $2y$12$WLw2sYa.NYZoBVoCOE84qe3xNm7kbSoKVIBXP.PvqNDna60vnZhEW
