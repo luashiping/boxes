@@ -1,0 +1,99 @@
+version: '2.2'
+services:
+  # cerebro:
+  #   image: lmenezes/cerebro:0.8.3
+  #   container_name: cerebro
+  #   ports:
+  #     - "9000:9000"
+  #   command:
+  #     - -Dhosts.0.host=http://elasticsearch:9200
+  #   networks:
+  #     - es6net
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.4.0
+    container_name: kibana6
+    environment:
+      - I18N_LOCALE=zh-CN
+      - XPACK_GRAPH_ENABLED=true
+      - TIMELION_ENABLED=true
+      - XPACK_MONITORING_COLLECTION_ENABLED="true"
+      - ELASTICSEARCH_URL="http://elasticsearch1:9200"
+    ports:
+      - "5601:5601"
+    networks:
+      - es6net
+
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    container_name: es6_01
+    environment:
+      - cluster.name=geektime
+      - node.name=elasticsearch1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - discovery.seed_hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      # - cluster.initial_master_nodes=eelasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es6data1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - es6net
+
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    container_name: es6_02
+    environment:
+      - cluster.name=geektime
+      - node.name=elasticsearch2
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - discovery.seed_hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      # - cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es6data2:/usr/share/elasticsearch/data
+    networks:
+      - es6net
+
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    container_name: es6_03
+    environment:
+      - cluster.name=geektime
+      - node.name=elasticsearch3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - discovery.seed_hosts=elasticsearch1,elasticsearch2,elasticsearch3
+      # - cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3
+      - discovery.zen.ping.unicast.hosts=elasticsearch1,elasticsearch2,elasticsearch3
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es6data3:/usr/share/elasticsearch/data
+    networks:
+      - es6net
+
+
+volumes:
+  es6data1:
+    driver: local
+  es6data2:
+    driver: local
+  es6data3:
+    driver: local
+
+networks:
+  es6net:
+    driver: bridge
